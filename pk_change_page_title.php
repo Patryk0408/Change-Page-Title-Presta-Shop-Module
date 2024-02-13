@@ -65,7 +65,6 @@ class Pk_change_page_title extends Module
 
         return parent::install() &&
             $this->registerHook('header') &&
-            $this->registerHook('displayBackOfficeHeader') &&
             $this->registerHook('displayHeader');
     }
 
@@ -162,11 +161,6 @@ class Pk_change_page_title extends Module
                         'name' => 'PK_CHANGE_PAGE_TITLE_ACCOUNT_EMAIL',
                         'label' => $this->l('Email'),
                     ),
-                    array(
-                        'type' => 'password',
-                        'name' => 'PK_CHANGE_PAGE_TITLE_ACCOUNT_PASSWORD',
-                        'label' => $this->l('Password'),
-                    ),
                 ),
                 'submit' => array(
                     'title' => $this->l('Save'),
@@ -183,7 +177,6 @@ class Pk_change_page_title extends Module
         return array(
             'PK_CHANGE_PAGE_TITLE_LIVE_MODE' => Configuration::get('PK_CHANGE_PAGE_TITLE_LIVE_MODE', true),
             'PK_CHANGE_PAGE_TITLE_ACCOUNT_EMAIL' => Configuration::get('PK_CHANGE_PAGE_TITLE_ACCOUNT_EMAIL', 'contact@prestashop.com'),
-            'PK_CHANGE_PAGE_TITLE_ACCOUNT_PASSWORD' => Configuration::get('PK_CHANGE_PAGE_TITLE_ACCOUNT_PASSWORD', null),
         );
     }
 
@@ -200,23 +193,11 @@ class Pk_change_page_title extends Module
     }
 
     /**
-    * Add the CSS & JavaScript files you want to be loaded in the BO.
-    */
-    public function hookDisplayBackOfficeHeader()
-    {
-        if (Tools::getValue('configure') == $this->name) {
-            $this->context->controller->addJS($this->_path.'views/js/back.js');
-            $this->context->controller->addCSS($this->_path.'views/css/back.css');
-        }
-    }
-
-    /**
      * Add the CSS & JavaScript files you want to be added on the FO.
      */
     public function hookHeader()
     {
         $this->context->controller->addJS($this->_path.'/views/js/front.js');
-        $this->context->controller->addCSS($this->_path.'/views/css/front.css');
     }
 
     public function hookDisplayHeader()
