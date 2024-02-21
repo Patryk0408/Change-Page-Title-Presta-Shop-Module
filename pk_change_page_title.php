@@ -61,17 +61,12 @@ class Pk_change_page_title extends Module
      */
     public function install()
     {
-        Configuration::updateValue('PK_CHANGE_PAGE_TITLE_LIVE_MODE', false);
-
         return parent::install() &&
-            $this->registerHook('header') &&
-            $this->registerHook('displayHeader');
+            $this->registerHook('header');
     }
 
     public function uninstall()
     {
-        Configuration::deleteByName('PK_CHANGE_PAGE_TITLE_LIVE_MODE');
-
         return parent::uninstall();
     }
 
@@ -89,7 +84,7 @@ class Pk_change_page_title extends Module
 
         $this->context->smarty->assign('module_dir', $this->_path);
 
-        $output = $this->context->smarty->fetch($this->local_path.'views/templates/admin/configure.tpl');
+        $output = $this->context->smarty->fetch($this->local_path.'views/templates/admin/configure.twig');
 
         return $output.$this->renderForm();
     }
@@ -135,31 +130,12 @@ class Pk_change_page_title extends Module
                 ),
                 'input' => array(
                     array(
-                        'type' => 'switch',
-                        'label' => $this->l('Live mode'),
-                        'name' => 'PK_CHANGE_PAGE_TITLE_LIVE_MODE',
-                        'is_bool' => true,
-                        'desc' => $this->l('Use this module in live mode'),
-                        'values' => array(
-                            array(
-                                'id' => 'active_on',
-                                'value' => true,
-                                'label' => $this->l('Enabled')
-                            ),
-                            array(
-                                'id' => 'active_off',
-                                'value' => false,
-                                'label' => $this->l('Disabled')
-                            )
-                        ),
-                    ),
-                    array(
                         'col' => 3,
                         'type' => 'text',
-                        'prefix' => '<i class="icon icon-envelope"></i>',
-                        'desc' => $this->l('Enter a valid email address'),
-                        'name' => 'PK_CHANGE_PAGE_TITLE_ACCOUNT_EMAIL',
-                        'label' => $this->l('Email'),
+                        'prefix' => '<i class="icon icon-barcode"></i>',
+                        'desc' => $this->l('Enter a toggle title'),
+                        'name' => 'PK_CHANGE_PAGE_TITLE_ACCOUNT_TITLE',
+                        'label' => $this->l('New title for your website'),
                     ),
                 ),
                 'submit' => array(
@@ -175,8 +151,7 @@ class Pk_change_page_title extends Module
     protected function getConfigFormValues()
     {
         return array(
-            'PK_CHANGE_PAGE_TITLE_LIVE_MODE' => Configuration::get('PK_CHANGE_PAGE_TITLE_LIVE_MODE', true),
-            'PK_CHANGE_PAGE_TITLE_ACCOUNT_EMAIL' => Configuration::get('PK_CHANGE_PAGE_TITLE_ACCOUNT_EMAIL', 'contact@prestashop.com'),
+            'PK_CHANGE_PAGE_TITLE_ACCOUNT_TITLE' => Configuration::get('PK_CHANGE_PAGE_TITLE_ACCOUNT_TITLE', ''),
         );
     }
 
@@ -197,11 +172,11 @@ class Pk_change_page_title extends Module
      */
     public function hookHeader()
     {
-        $this->context->controller->addJS($this->_path.'/views/js/front.js');
-    }
+        $newNameOfPage = Configuration::get("PK_CHANGE_PAGE_TITLE_ACCOUNT_TITLE" );
+        Media::addJsDef([
+            'newNameOfPage' => $newNameOfPage
+        ]);
 
-    public function hookDisplayHeader()
-    {
-        /* Place your code here. */
+        $this->context->controller->addJS($this->_path.'/views/js/front.js');
     }
 }

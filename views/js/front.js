@@ -25,3 +25,18 @@
 * Don't forget to prefix your containers with your own identifier
 * to avoid any conflicts with others containers.
 */
+{
+    const toggleTitleOfPage = () => {
+        const nameOfPage = document.title;
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && newNameOfPage && newNameOfPage.trim() != '') {
+                document.title = newNameOfPage
+            } else {
+                document.title = nameOfPage
+            }
+        })
+    }
+    
+    toggleTitleOfPage();
+}
